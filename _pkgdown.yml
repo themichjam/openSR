@@ -1,0 +1,13 @@
+template:
+  bootstrap: 5
+reference:
+  - title: Project and config
+    contents:
+      - sr_project_create
+      - sr_project_load
+      - sr_config_read
+      - sr_config_write
+      - sr_log_event
+  - title: Workflow
+    contents:
+      - starts_with("sr_")
