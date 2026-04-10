@@ -1,0 +1,33 @@
+---
+title: "PRISMA and OSF alignment in opensr"
+format: html
+vignette: >
+  %\VignetteIndexEntry{PRISMA and OSF alignment in opensr}
+  %\VignetteEngine{quarto}
+  %\VignetteEncoding{UTF-8}
+---
+
+`opensr` is a standards-aware workflow layer.
+
+## PRISMA 2020
+
+- Flow data is generated from structured logs (`sr_flow_data()`, `sr_prisma_flow()`).
+- Checklist scaffolds are available via `sr_prisma_checklist("PRISMA 2020")`.
+
+## PRISMA-P
+
+- Protocol objects enforce a structured schema (`sr_protocol_init()`).
+- Validation flags missing fields (`sr_protocol_validate()`).
+
+## PRISMA-S
+
+- Search logs capture source/platform/query/date/result count/hash (`sr_search_log_init()`, `sr_search_add()`).
+
+## OSF-style workflows
+
+- Archive manifests (`sr_osf_manifest()`), verification (`sr_archive_verify()`), and bundling (`sr_archive_bundle()`).
+- Optional upload helper (`sr_osf_push(dry_run = TRUE/FALSE)`).
+
+## Compliance note
+
+`opensr` helps structure reporting and provenance, but it does **not** guarantee PRISMA compliance or replace methodological judgment.
