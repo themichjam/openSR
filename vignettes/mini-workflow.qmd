@@ -1,0 +1,54 @@
+---
+title: "opensr mini workflow"
+format: html
+vignette: >
+  %\VignetteIndexEntry{opensr mini workflow}
+  %\VignetteEngine{quarto}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+library(opensr)
+```
+
+## 1. Create a project
+
+```{r}
+proj <- sr_project_create(file.path(tempdir(), "review-demo"), name = "demo-review")
+proj
+```
+
+## 2. Build protocol and search log
+
+```{r}
+protocol <- sr_protocol_init("Demo protocol", "Does X improve Y?")
+protocol <- sr_protocol_validate(protocol)
+
+search <- sr_search_log_init()
+search <- sr_search_add(search, "Scopus", "x AND y", n_results = 42)
+search$data
+```
+
+## 3. Import records and compute flow
+
+```{r}
+csv <- system.file("extdata", "toy_records.csv", package = "opensr")
+records <- sr_import_csv(csv)
+records <- sr_deduplicate(records)
+
+screen_tbl <- sr_screen_template(records)
+screen_tbl$reviewer_1 <- "include"
+screen_tbl$reviewer_2 <- c("include", rep("exclude", nrow(screen_tbl) - 1))
+screen <- sr_screen_dual(screen_tbl)
+
+fulltext <- sr_fulltext_log(data.frame(record_id = 2, reason = "wrong population"))
+sr_prisma_flow(sr_flow_data(records, screen, fulltext))
+```
+
+## 4. Archive and reproducibility
+
+```{r}
+root <- file.path(tempdir(), "review-demo")
+sr_archive_bundle(root)
+sr_report_reproducibility(root)
+```
