@@ -1,0 +1,53 @@
+Package: opensr
+Title: Open Science Orchestration for Systematic Reviews and Meta-Analysis
+Version: 0.1.0
+Authors@R: 
+    person(given = "OpenSR", family = "Contributors", role = c("aut", "cre"),
+           email = "maintainers@example.org")
+Description: A fully free and open-source orchestration and standards layer for
+    open-science-aligned systematic review and meta-analysis workflows.
+    The package standardizes project structure, metadata, provenance,
+    screening logs, extraction templates, synthesis wrappers, PRISMA-ready
+    reporting scaffolds, and OSF-friendly archive exports.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Depends: 
+    R (>= 4.1.0)
+Imports:
+    checkmate,
+    cli,
+    digest,
+    dplyr,
+    fs,
+    glue,
+    jsonlite,
+    meta,
+    metafor,
+    purrr,
+    readr,
+    rlang,
+    stringr,
+    tibble,
+    yaml
+Suggests:
+    devtools,
+    usethis,
+    roxygen2,
+    pkgdown,
+    osfr,
+    quarto,
+    revtools,
+    robvis,
+    tarchetypes,
+    targets,
+    renv,
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown,
+    ggplot2
+Config/testthat/edition: 3
+URL: https://github.com/example/opensr
+BugReports: https://github.com/example/opensr/issues
+VignetteBuilder: quarto
