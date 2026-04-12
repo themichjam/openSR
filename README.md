@@ -1,73 +1,62 @@
 # opensr
 
-`opensr` is a fully free and open-source orchestration framework for transparent systematic reviews and meta-analyses.
+`opensr` is a fully free and open-source orchestration and standards layer for transparent systematic reviews and meta-analysis.
 
-## Lifecycle stage
+## Purpose
 
-**Status: MVP / alpha (experimental).**
-
-The package is suitable for reproducible workflow prototyping and transparent audit trails, with iterative hardening expected as usage grows.
-
-## What opensr is for
-
-- Standardized project structure for review workflows.
-- Machine-readable provenance and event logging.
-- Structured PRISMA-aware objects for protocol/search/screening/extraction/reporting.
-- Thin wrappers around mature open-source synthesis engines (`metafor`, `meta`).
-- OSF-compatible manifests and archive bundles (OSF use optional).
-
-## What opensr is not for
-
-- Not a replacement for methodological expertise.
-- Not an automated risk-of-bias judge.
-- Not a PRISMA compliance certifier.
-- Not dependent on proprietary tools or paid APIs.
-
-> `opensr` is **PRISMA-aware**, not a guarantee of PRISMA compliance.
-
-## Standards alignment
-
-- **PRISMA 2020**: flow-ready reporting objects and checklist scaffolds.
-- **PRISMA-P**: structured protocol schema and validation.
-- **PRISMA-S**: search provenance schema and query hash capture.
-- **OSF-style workflows**: manifest, archive bundle, optional `osfr` upload.
+The package standardises project structure, metadata, provenance logging, screening records, extraction templates, synthesis wrappers, and archival exports while interoperating with mature analysis engines (e.g., `metafor`, `meta`, `revtools`, `robvis`) instead of replacing them.
 
 ## FOSS-only policy
 
-- Core workflows use open-source R packages only.
-- No RevMan, Rayyan, Meta-Essentials, Excel, Word, or closed APIs in the core workflow.
-- ASReview integration is import/export only.
+- Core workflows use only open-source dependencies.
+- No proprietary tools/platforms are required.
+- Interoperability with ASReview is supported through open import/export.
 
-## Canonical end-to-end toy workflow
+## Standards alignment
 
-A full toy workflow is provided at:
+- **PRISMA 2020**: reporting scaffolds and flow summaries.
+- **PRISMA-P**: protocol object and validation helpers.
+- **PRISMA-S**: search log provenance and structured capture.
 
-- `inst/scripts/end_to_end_toy_review.R` (`run_opensr_toy_workflow()`)
-- tested by `tests/testthat/test-e2e-toy-workflow.R`
+> Note: `opensr` is PRISMA-aware, **not a guarantee of PRISMA compliance**.
 
-This workflow exercises project creation, search logging, record import + dedup, dual screening + reconciliation, full-text exclusion log, extraction, effect-size wrapping, meta-analysis, PRISMA flow, archive bundle, and reproducibility report.
+## OSF workflow note
 
-## Reproducible pipeline example (`targets` + `renv`)
+`opensr` supports OSF-style workflows and can upload via `osfr`, but OSF use remains optional.
+All core workflows are runnable locally from code alone.
+
+## Dependency philosophy
+
+- Prefer battle-tested ecosystem packages for analysis (`meta`, `metafor`).
+- Focus `opensr` on orchestration, standards, and auditability.
+- Keep reproducibility first-class with file hashes, logs, and optional `targets`/`renv` integration.
+
+## Quickstart
 
 ```r
 library(opensr)
 
-proj <- sr_project_create("review", name = "pipeline-demo")
-sr_init_targets("review")
-sr_init_renv("review")
+proj <- sr_project_create("review")
+protocol <- sr_protocol_init(
+  title = "Exercise and blood pressure",
+  question = "What is the effect of exercise on systolic blood pressure?"
+)
 
-# then:
-# renv::init()
-# tar_make()
+search <- sr_search_log_init() |>
+  sr_search_add("PubMed", "exercise AND blood pressure", n_results = 245)
+
+records <- sr_import_csv(system.file("extdata", "toy_records.csv", package = "opensr")) |>
+  sr_deduplicate()
+
+screen <- sr_screen_template(records) |>
+  sr_screen_dual()
+
+flow <- sr_flow_data(records, screen)
+prisma <- sr_prisma_flow(flow)
+
+archive <- sr_archive_bundle("review")
 ```
 
-## Local development commands
+## Mini demo data
 
-```r
-devtools::document()
-devtools::test()
-devtools::check()
-pkgdown::build_site()
-quarto::quarto_render("vignettes/mini-workflow.qmd")
-quarto::quarto_render("vignettes/standards-alignment.qmd")
-```
+A toy dataset is provided in `inst/extdata/toy_records.csv`.
