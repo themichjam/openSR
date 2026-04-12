@@ -1,0 +1,30 @@
+template:
+  bootstrap: 5
+navbar:
+  structure:
+    left:
+      - intro
+      - reference
+      - articles
+      - news
+reference:
+  - title: Core object model
+    contents:
+      - new_sr_object
+      - as.sr_object
+      - validate_sr_object
+  - title: Project and config
+    contents:
+      - sr_project_create
+      - sr_project_load
+      - sr_config_read
+      - sr_config_write
+      - sr_log_event
+  - title: Workflow API
+    contents:
+      - starts_with("sr_")
+articles:
+  - title: Vignettes
+    contents:
+      - mini-workflow
+      - standards-alignment

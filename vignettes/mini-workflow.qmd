@@ -1,0 +1,61 @@
+---
+title: "opensr mini workflow"
+format: html
+vignette: >
+  %\VignetteIndexEntry{opensr mini workflow}
+  %\VignetteEngine{quarto}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+library(opensr)
+```
+
+## Create project and protocol
+
+```{r}
+root <- file.path(tempdir(), "opensr-demo")
+proj <- sr_project_create(root, name = "demo-review")
+
+protocol <- sr_protocol_init("Demo protocol", "Does X improve Y?")
+protocol <- sr_protocol_validate(protocol)
+```
+
+## Search log and records
+
+```{r}
+search <- sr_search_log_init()
+search <- sr_search_add(search, source = "Scopus", query = "x AND y", n_results = 42)
+
+records <- sr_import_csv(system.file("extdata", "toy_records.csv", package = "opensr"))
+records <- sr_deduplicate(records)
+records <- sr_records_validate(records)
+```
+
+## Screening and flow
+
+```{r}
+screen <- sr_screen_template(records, reviewers = c("alice", "bob"))
+screen$data$decision_1 <- c("include", "exclude", "include")
+screen$data$decision_2 <- c("include", "include", "include")
+screen <- sr_screen_dual(screen)
+
+screen <- sr_screen_resolve(
+  screen,
+  resolutions = data.frame(record_id = 2, final_decision = "exclude", resolver = "carol")
+)
+
+fulltext <- sr_fulltext_log(data.frame(record_id = 2, reason = "wrong population"))
+flow <- sr_flow_data(records, screen, fulltext)
+sr_prisma_flow(flow)$data
+```
+
+## Archive and reproducibility
+
+```{r}
+manifest <- sr_osf_manifest(root)
+sr_archive_verify(manifest)
+
+archive <- sr_archive_bundle(root)
+repro <- sr_report_reproducibility(root)
+```
