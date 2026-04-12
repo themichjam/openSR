@@ -1,6 +1,6 @@
 Package: opensr
 Title: Open Science Orchestration for Systematic Reviews and Meta-Analysis
-Version: 0.1.0
+Version: 0.0.1
 Authors@R: 
     person(given = "OpenSR", family = "Contributors", role = c("aut", "cre"),
            email = "maintainers@example.org")
@@ -32,10 +32,6 @@ Imports:
     tibble,
     yaml
 Suggests:
-    devtools,
-    usethis,
-    roxygen2,
-    pkgdown,
     osfr,
     quarto,
     revtools,
